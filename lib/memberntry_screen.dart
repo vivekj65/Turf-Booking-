@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:turf_booking/booking_screen.dart';
-import 'package:turf_booking/home_screen.dart';
 import 'package:turf_booking/model/slot_model.dart';
+import 'package:turf_booking/payment_screen.dart';
 import 'package:turf_booking/themes/theme_colors.dart';
 
 class MemberEntryScreen extends StatefulWidget {
@@ -129,7 +129,7 @@ class _MemberEntryScreenState extends State<MemberEntryScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const HomeScreen(),
+                                builder: (_) => PaymentScreen(),
                               ),
                             );
                           },
@@ -140,7 +140,7 @@ class _MemberEntryScreenState extends State<MemberEntryScreen> {
                             backgroundColor: Colors.green,
                           ),
                           child: const Text(
-                            "Save Members",
+                            "Proceed To Pay",
                             style: TextStyle(
                               color: Colors.white,
                             ),

@@ -43,6 +43,9 @@ dependencies:
   google_sign_in: ^6.1.5
   cached_network_image: ^3.3.0
   carousel_slider: ^4.2.1
+  upi_india: ^3.0.1
+  flutter_stripe: ^9.5.0+1
+  url_launcher: ^6.2.1
 
 dev_dependencies:
   flutter_test:
