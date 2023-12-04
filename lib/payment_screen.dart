@@ -1,65 +1,130 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_upi/flutter_upi.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:quantupi/quantupi.dart';
+import 'package:turf_booking/themes/theme_colors.dart';
 
-class PaymentScreen extends StatelessWidget {
+class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<PaymentScreen> createState() => _PaymentScreenState();
+}
+
+class _PaymentScreenState extends State<PaymentScreen> {
+  var amount = TextEditingController();
+
+  var descrip = TextEditingController();
+  var name = TextEditingController();
+  var upiID = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UPI Payment'),
+        backgroundColor: HashColorCodes.green,
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontFamily: 'Sarala',
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                initiateUpiPayment();
-              },
-              child: Text('Pay using UPI'),
+          children: <Widget>[
+            TextField(
+              controller: upiID,
+              decoration: InputDecoration(
+                  hintText: "Upi Id",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey[300]!))),
             ),
-            SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-
-                launchGooglePay();
-              },
-              child: Image.asset('images/google-pay-logo.png', width: 100, height: 100),
+            const SizedBox(
+              height: 10,
             ),
+            TextField(
+              controller: name,
+              decoration: InputDecoration(
+                  hintText: "Name",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey[300]!))),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: descrip,
+              decoration: InputDecoration(
+                  hintText: "Description",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey[300]!))),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: amount,
+              decoration: InputDecoration(
+                  hintText: "Amount",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey[300]!))),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.green)),
+                    onPressed: () {
+                      paymentStart();
+                    },
+                    child: const Text(
+                      "Pay",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    )))
           ],
         ),
       ),
     );
   }
 
-  void initiateUpiPayment() async {
-    UpiTransactionResponse? transactionResponse = await FlutterUpi.initiateTransaction(
-      amount: '1.00',
-      merchantCode: 'your_merchant_code',
-      transactionRef: 'unique_transaction_id',
-      transactionNote: 'Payment for Something',
-      receiverName: 'Receiver Name',
-      receiverUpiAddress: 'receiver@upi',
+  void paymentStart() async {
+    Quantupi upi = Quantupi(
+      receiverUpiId: upiID.text,
+      receiverName: name.text,
+      transactionRefId: 'kdskd',
+      transactionNote: descrip.text,
+      amount: double.parse(amount.text),
     );
+    final response = await upi.startTransaction();
+    print(response);
 
-    if (transactionResponse != null && transactionResponse.status == 'success') {
-      // Payment was successful
-      // Handle the success scenario here
-    } else {
-      // Payment failed or was canceled
-      // Handle the failure scenario here
-    }
-  }
-
-  void launchGooglePay() async {
-    final googlePayUrl = 'https://pay.google.com/gp/v/gpc/your_upi'; 
-
-    if (await canLaunch(googlePayUrl)) {
-      await launch(googlePayUrl);
-    } else {
-      // Handle the case where Google Pay app cannot be launched
-    }
+    // ignore: use_build_context_synchronously
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${response}"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("ok"))
+            ],
+          );
+        });
   }
 }
-

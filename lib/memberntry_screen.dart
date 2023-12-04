@@ -129,7 +129,9 @@ class _MemberEntryScreenState extends State<MemberEntryScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => PaymentScreen(),
+                                builder: (_) => const PaymentScreen(
+                                  title: 'Payment Screen',
+                                ),
                               ),
                             );
                           },
@@ -179,7 +181,6 @@ class _MemberEntryScreenState extends State<MemberEntryScreen> {
     );
   }
 
-  // Function to get the count of existing members for the slot from Firebase
   Future<int> getExistingMemberCount(int selectedSlot) async {
     final date = DateTime.now();
     final formattedDate = "${date.month} ${date.day}, ${date.year}";
@@ -192,7 +193,6 @@ class _MemberEntryScreenState extends State<MemberEntryScreen> {
     return querySnapshot.docs.length;
   }
 
-  // Function to save members to Firestore with a custom date format
   Future<void> saveMembersToFirestore(
       List<String> members, int selectedSlot, DateTime date) async {
     final CollectionReference membersCollection =
